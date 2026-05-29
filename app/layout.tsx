@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+/*import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -30,4 +30,26 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">{children}</body>
     </html>
   );
+}*/
+
+import type { Metadata } from 'next'
+import { ClerkProvider } from '@clerk/nextjs'
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: 'Fête',
+}
+
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <ClerkProvider>
+      <html lang="en">
+        <body className="bg-cream text-ink">{children}</body>
+      </html>
+    </ClerkProvider>
+  )
 }

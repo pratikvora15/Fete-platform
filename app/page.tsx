@@ -1,4 +1,4 @@
-import Image from "next/image";
+/*import Image from "next/image";
 
 export default function Home() {
   return (
@@ -62,4 +62,54 @@ export default function Home() {
       </main>
     </div>
   );
+}*/
+
+import Link from 'next/link'
+
+export default function Home() {
+  return (
+    <div className="min-h-screen bg-cream">
+      {/* Header */}
+      <header className="border-b border-border px-6 py-4">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          <h1 className="text-2xl font-bold text-ink">Fête</h1>
+          <div className="flex gap-4">
+            <Link href="/sign-in" className="text-ink hover:text-gold">Sign In</Link>
+            <Link href="/partner/sign-up" className="px-4 py-2 bg-gold text-cream rounded">For Suppliers</Link>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero */}
+      <section className="bg-warm py-20 px-6 text-center">
+        <div className="max-w-4xl mx-auto">
+          <h2 className="text-5xl font-bold text-ink mb-4">Plan Your Perfect Celebration</h2>
+          <p className="text-xl text-ink2 mb-8">Find venues, entertainers, and services for your event</p>
+          <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
+            <input 
+              type="text" 
+              placeholder="What are you looking for?" 
+              className="w-full px-4 py-2 border border-border rounded mb-4"
+            />
+            <button className="w-full px-6 py-3 bg-gold text-cream rounded font-semibold hover:bg-gold-dk">
+              Search
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Categories */}
+      <section className="max-w-7xl mx-auto px-6 py-16">
+        <h3 className="text-3xl font-bold text-ink mb-8">Popular Categories</h3>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+          {['Venues', 'Entertainers', 'Caterers', 'Photographers'].map((cat) => (
+            <div key={cat} className="bg-white border border-border rounded-lg p-6 text-center hover:shadow-lg transition">
+              <h4 className="font-semibold text-ink">{cat}</h4>
+              <p className="text-sm text-ink2 mt-2">Browse {cat.toLowerCase()}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  )
 }
