@@ -1,16 +1,23 @@
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-)
-
 export default async function SearchPage({
   searchParams,
 }: {
   searchParams: Record<string, string>
 }) {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+  if (!supabaseUrl || !supabaseAnonKey) {
+    return (
+      <div className="min-h-screen bg-cream px-6 py-12">
+        <p className="text-ink2">Supabase configuration is missing.</p>
+      </div>
+    )
+  }
+
+  const supabase = createClient(supabaseUrl, supabaseAnonKey)
   const city = searchParams.city || 'Toronto'
 
   const { data: suppliers } = await supabase

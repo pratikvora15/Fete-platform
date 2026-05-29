@@ -1,115 +1,334 @@
-/*import Image from "next/image";
-
-export default function Home() {
-  return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
-  );
-}*/
-
 import Link from 'next/link'
 
+const DEMAND = [
+  { label: 'Magicians', w: '82%', count: '147' },
+  { label: 'Party venues', w: '71%', count: '128' },
+  { label: 'Face painters', w: '54%', count: '97' },
+  { label: 'Fire performers', w: '38%', count: '68' },
+  { label: 'Stand-up comedians', w: '29%', count: '52' },
+]
+
+const VERTICALS = [
+  {
+    icon: '👶',
+    name: 'Baby shower',
+    desc: 'Venues, entertainers, games kits, and everything in between',
+    count: '340+ suppliers in Toronto',
+    badge: 'Most popular',
+    iconBg: 'bg-rose-lt',
+    badgeBg: 'bg-rose-lt',
+    badgeText: 'text-rose',
+  },
+  {
+    icon: '🏠',
+    name: 'Welcome baby',
+    desc: 'Intimate gatherings after baby arrives — keep it warm, keep it close',
+    count: '210+ suppliers in Toronto',
+    badge: null,
+    iconBg: 'bg-teal-lt',
+    badgeBg: '',
+    badgeText: '',
+  },
+  {
+    icon: '🎠',
+    name: '1st birthday',
+    desc: 'Characters, bouncy castles, entertainers, party game rentals',
+    count: '480+ suppliers in Toronto',
+    badge: null,
+    iconBg: 'bg-blue-lt',
+    badgeBg: '',
+    badgeText: '',
+  },
+  {
+    icon: '💍',
+    name: 'Engagement party',
+    desc: 'Jazz bands, string quartets, caricature artists, luxury venues',
+    count: '290+ suppliers in Toronto',
+    badge: 'New',
+    iconBg: 'bg-gold-lt',
+    badgeBg: 'bg-gold-lt',
+    badgeText: 'text-amber',
+  },
+]
+
+const ENTERTAINERS = [
+  {
+    emoji: '🪄',
+    name: 'Marco the Magnificent',
+    type: 'Magician · Toronto, ON',
+    tags: ['Baby showers', 'Birthdays', 'Corporate'],
+    rating: '4.9',
+    reviews: '87',
+    price: 'from $120/hr',
+    photoBg: 'bg-rose-lt',
+  },
+  {
+    emoji: '🔥',
+    name: 'Soleil Fire Collective',
+    type: 'Fire performers · Vancouver, BC',
+    tags: ['Engagements', 'Outdoor events'],
+    rating: '5.0',
+    reviews: '44',
+    price: 'from $400/show',
+    photoBg: 'bg-warm',
+  },
+  {
+    emoji: '🎭',
+    name: 'Jess Mackay Comedy',
+    type: 'Stand-up comedian · Toronto, ON',
+    tags: ['Engagements', 'Corporate', 'Adults only'],
+    rating: '4.8',
+    reviews: '61',
+    price: 'from $250/hr',
+    photoBg: 'bg-teal-lt',
+  },
+]
+
 export default function Home() {
   return (
-    <div className="min-h-screen bg-cream">
-      {/* Header */}
-      <header className="border-b border-border px-6 py-4">
-        <div className="max-w-7xl mx-auto flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-ink">Fête</h1>
-          <div className="flex gap-4">
-            <Link href="/sign-in" className="text-ink hover:text-gold">Sign In</Link>
-            <Link href="/partner/sign-up" className="px-4 py-2 bg-gold text-cream rounded">For Suppliers</Link>
-          </div>
-        </div>
-      </header>
+    <div className="bg-cream min-h-screen">
 
-      {/* Hero */}
-      <section className="bg-warm py-20 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h2 className="text-5xl font-bold text-ink mb-4">Plan Your Perfect Celebration</h2>
-          <p className="text-xl text-ink2 mb-8">Find venues, entertainers, and services for your event</p>
-          <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl mx-auto">
-            <input 
-              type="text" 
-              placeholder="What are you looking for?" 
-              className="w-full px-4 py-2 border border-border rounded mb-4"
-            />
-            <button className="w-full px-6 py-3 bg-gold text-cream rounded font-semibold hover:bg-gold-dk">
-              Search
+      {/* ── NAV ── */}
+      <nav className="flex items-center justify-between px-12 py-[18px] border-b border-border bg-cream sticky top-0 z-50">
+        <div className="font-display text-2xl font-bold text-ink tracking-tight">
+          Fête<span className="text-gold">.</span>
+        </div>
+        <ul className="flex gap-7 list-none m-0 p-0">
+          {['Baby showers', 'Birthdays', 'Engagements', 'Entertainers', 'Venues'].map(link => (
+            <li key={link}>
+              <Link href="#" className="text-sm text-ink2 hover:text-ink transition-colors no-underline">{link}</Link>
+            </li>
+          ))}
+        </ul>
+        <div className="flex gap-2.5 items-center">
+          <Link href="/partner/sign-up">
+            <button className="text-[13px] font-medium px-[18px] py-2 border border-border rounded-full bg-transparent text-ink hover:bg-warm transition-colors cursor-pointer font-sans">
+              List your service
             </button>
+          </Link>
+          <Link href="/sign-in">
+            <button className="text-[13px] font-semibold px-5 py-[9px] rounded-full bg-ink text-white border-none hover:opacity-85 transition-opacity cursor-pointer font-sans">
+              Sign in
+            </button>
+          </Link>
+        </div>
+      </nav>
+
+      {/* ── HERO ── */}
+      <section className="border-b border-border">
+        <div className="max-w-[1200px] mx-auto px-12 py-[72px] pb-14 grid grid-cols-2 gap-12 items-center">
+
+          {/* Left: copy */}
+          <div>
+            <div className="text-[11px] font-semibold tracking-[0.1em] uppercase text-gold mb-4">
+              Canada's event marketplace
+            </div>
+            <h1 className="font-display text-[54px] leading-[1.08] font-bold tracking-[-1px] text-ink mb-5">
+              Every milestone<br />
+              deserves a{' '}
+              <em className="text-gold" style={{ fontStyle: 'italic' }}>perfect</em><br />
+              celebration
+            </h1>
+            <p className="text-base text-ink2 mb-8 leading-[1.7] max-w-[480px]">
+              Find venues, book entertainers, rent games, and plan every life event — baby showers,
+              birthdays, and engagements — all in one place.
+            </p>
+            <div className="flex items-center bg-white border border-border rounded-xl p-[6px] pl-4 max-w-[480px] mb-5">
+              <input
+                type="text"
+                placeholder="Magician, venue, fire performer in Toronto…"
+                className="flex-1 border-none outline-none text-sm font-sans bg-transparent text-ink placeholder:text-ink3"
+              />
+              <button className="bg-ink text-white rounded-lg px-5 py-[10px] text-[13px] font-semibold font-sans border-none cursor-pointer">
+                Search
+              </button>
+            </div>
+            <div className="flex gap-2 flex-wrap">
+              {['Baby shower', '1st birthday', 'Engagement party', 'Fire performers', 'Magicians', 'Venue rental'].map(tag => (
+                <span key={tag} className="text-xs py-1 px-3 rounded-full border border-border text-ink2 cursor-pointer hover:border-gold hover:text-gold transition-colors">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Right: card collage */}
+          <div className="grid grid-cols-2 gap-2.5">
+            {/* Tall card — spans 2 rows */}
+            <div className="bg-white border border-border rounded-2xl p-4 row-span-2 relative">
+              <div className="absolute top-3 right-3 text-[11px] font-semibold bg-ink text-white px-2 py-[3px] rounded-full">
+                from $120
+              </div>
+              <div
+                className="w-full rounded-[10px] mb-2.5 flex items-center justify-center text-4xl bg-rose-lt"
+                style={{ aspectRatio: '1 / 1.2' }}
+              >
+                🪄
+              </div>
+              <div className="text-[13px] font-semibold text-ink mb-0.5">Marco the Magnificent</div>
+              <div className="text-[11px] text-ink3">Magician · Toronto, ON</div>
+              <span className="inline-block text-[10px] font-semibold py-[2px] px-2 rounded-full mt-1.5 bg-rose-lt text-rose">
+                Baby showers
+              </span>
+              <div className="text-[11px] text-ink3 mt-1.5">⭐ 4.9 · 87 events</div>
+            </div>
+            {/* Card 2 */}
+            <div className="bg-white border border-border rounded-2xl p-4">
+              <div className="w-full aspect-square rounded-[10px] mb-2.5 flex items-center justify-center text-4xl bg-teal-lt">
+                🌿
+              </div>
+              <div className="text-[13px] font-semibold text-ink mb-0.5">The Garden Loft</div>
+              <div className="text-[11px] text-ink3">Venue · Queen West, Toronto</div>
+              <span className="inline-block text-[10px] font-semibold py-[2px] px-2 rounded-full mt-1.5 bg-teal-lt text-teal">
+                Up to 80 guests
+              </span>
+            </div>
+            {/* Card 3 */}
+            <div className="bg-white border border-border rounded-2xl p-4">
+              <div
+                className="w-full aspect-square rounded-[10px] mb-2.5 flex items-center justify-center text-4xl"
+                style={{ background: '#EEEDFD' }}
+              >
+                🔥
+              </div>
+              <div className="text-[13px] font-semibold text-ink mb-0.5">Soleil Fire Collective</div>
+              <div className="text-[11px] text-ink3">Fire performers · Vancouver</div>
+              <span
+                className="inline-block text-[10px] font-semibold py-[2px] px-2 rounded-full mt-1.5"
+                style={{ background: '#EEEDFD', color: '#7B6FD4' }}
+              >
+                Engagements
+              </span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="max-w-7xl mx-auto px-6 py-16">
-        <h3 className="text-3xl font-bold text-ink mb-8">Popular Categories</h3>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-          {['Venues', 'Entertainers', 'Caterers', 'Photographers'].map((cat) => (
-            <div key={cat} className="bg-white border border-border rounded-lg p-6 text-center hover:shadow-lg transition">
-              <h4 className="font-semibold text-ink">{cat}</h4>
-              <p className="text-sm text-ink2 mt-2">Browse {cat.toLowerCase()}</p>
+      {/* ── VERTICALS ── */}
+      <section className="bg-white border-b border-border">
+        <div className="max-w-[1200px] mx-auto px-12 py-14">
+          <div className="text-[11px] font-semibold tracking-[0.1em] uppercase text-ink3 mb-2">Plan by occasion</div>
+          <h2 className="font-display text-[36px] font-bold tracking-[-0.5px] text-ink mb-8">Every event, covered</h2>
+          <div className="grid grid-cols-4 gap-4">
+            {VERTICALS.map(v => (
+              <div
+                key={v.name}
+                className="bg-white border border-border rounded-2xl p-6 flex flex-col gap-3 cursor-pointer hover:border-[rgba(24,22,15,0.16)] hover:-translate-y-0.5 transition-all"
+              >
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-[22px] ${v.iconBg}`}>
+                  {v.icon}
+                </div>
+                <div>
+                  <div className="text-base font-semibold text-ink">{v.name}</div>
+                  <div className="text-[13px] text-ink2 leading-[1.5] mt-1">{v.desc}</div>
+                </div>
+                <div className="text-[11px] text-ink3 mt-auto">{v.count}</div>
+                {v.badge && (
+                  <span className={`text-[10px] font-semibold py-[3px] px-2 rounded-full w-fit ${v.badgeBg} ${v.badgeText}`}>
+                    {v.badge}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <div className="border-t border-border mx-12" />
+
+      {/* ── ENTERTAINERS ── */}
+      <div className="max-w-[1200px] mx-auto px-12 py-14">
+        <div className="text-[11px] font-semibold tracking-[0.1em] uppercase text-ink3 mb-2">Featured entertainers</div>
+        <h2 className="font-display text-[36px] font-bold tracking-[-0.5px] text-ink mb-8">
+          Performers who make it unforgettable
+        </h2>
+        <div className="grid grid-cols-3 gap-4">
+          {ENTERTAINERS.map(e => (
+            <div
+              key={e.name}
+              className="bg-white border border-border rounded-2xl overflow-hidden cursor-pointer hover:border-[rgba(24,22,15,0.16)] transition-colors"
+            >
+              <div className={`w-full h-40 flex items-center justify-center text-[52px] ${e.photoBg}`}>
+                {e.emoji}
+              </div>
+              <div className="p-4">
+                <div className="text-[15px] font-semibold text-ink mb-0.5">{e.name}</div>
+                <div className="text-xs text-ink3 mb-2">{e.type}</div>
+                <div className="flex gap-1.5 flex-wrap mb-2.5">
+                  {e.tags.map(t => (
+                    <span key={t} className="text-[10px] py-[2px] px-2 rounded-full bg-warm text-ink2">{t}</span>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between mt-2.5">
+                  <div className="text-xs text-ink2">
+                    ⭐ {e.rating} <span className="text-ink3">({e.reviews} reviews)</span>
+                  </div>
+                  <div className="text-[13px] font-semibold text-ink">{e.price}</div>
+                </div>
+              </div>
             </div>
           ))}
         </div>
+      </div>
+
+      {/* ── SUPPLIER BANNER ── */}
+      <section className="bg-ink py-14 px-12">
+        <div className="max-w-[1200px] mx-auto grid grid-cols-2 gap-12 items-center">
+          <div>
+            <div className="text-[11px] font-semibold tracking-[0.1em] uppercase text-gold mb-3">
+              For entertainers &amp; venues
+            </div>
+            <div className="font-display text-[40px] font-bold leading-[1.15] text-white mb-4 tracking-[-0.5px]">
+              Get discovered by event planners searching right now
+            </div>
+            <p className="text-[15px] leading-[1.7] mb-7" style={{ color: 'rgba(255,255,255,0.65)' }}>
+              Join 500+ suppliers already listed. Your first 6 months are completely free — no commission,
+              no catch. Claim your profile in under 2 minutes.
+            </p>
+            <Link href="/partner/sign-up">
+              <button className="text-sm font-semibold px-7 py-3 rounded-full bg-gold text-ink border-none cursor-pointer font-sans hover:opacity-90 transition-opacity">
+                List your service — it&apos;s free
+              </button>
+            </Link>
+          </div>
+
+          {/* Demand widget */}
+          <div
+            className="rounded-2xl p-6"
+            style={{ background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.12)' }}
+          >
+            <div className="text-[13px] mb-4" style={{ color: 'rgba(255,255,255,0.5)' }}>
+              Live searches in Toronto this week
+            </div>
+            {DEMAND.map(d => (
+              <div
+                key={d.label}
+                className="flex items-center py-2.5"
+                style={{ borderBottom: '1px solid rgba(255,255,255,0.08)' }}
+              >
+                <div className="text-[13px] min-w-[140px]" style={{ color: 'rgba(255,255,255,0.8)' }}>
+                  {d.label}
+                </div>
+                <div className="flex-1 mx-3 h-1 rounded-sm overflow-hidden" style={{ background: 'rgba(255,255,255,0.1)' }}>
+                  <div className="h-full rounded-sm bg-gold" style={{ width: d.w }} />
+                </div>
+                <div className="text-[13px] font-semibold text-white min-w-[40px] text-right font-mono">
+                  {d.count}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
+
+      {/* ── FOOTER ── */}
+      <footer className="bg-warm border-t border-border py-10 px-12 text-center">
+        <div className="font-display text-[22px] font-bold text-ink mb-2">
+          Fête<span className="text-gold">.</span>
+        </div>
+        <p className="text-xs text-ink3">Canada&apos;s event marketplace · Toronto · Vancouver · Ottawa · Calgary</p>
+      </footer>
+
     </div>
   )
 }

@@ -1,26 +1,27 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Colors */
+  --color-ink: #141210;
+  --color-ink2: #5E5B54;
+  --color-ink3: #A09C93;
+  --color-cream: #FAF8F3;
+  --color-warm: #F2EDE3;
+  --color-gold: #C4913A;
+  --color-gold-lt: #FBF4E6;
+  --color-gold-dk: #9A6E25;
+  --color-rose: #C4506A;
+  --color-rose-lt: #FCEEF2;
+  --color-teal: #2E9B72;
+  --color-teal-lt: #E8F6EF;
+  --color-blue: #2F6EC4;
+  --color-blue-lt: #EAF1FB;
+  --color-amber: #B8700A;
+  --color-border: #E5E0D8;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  /* Fonts */
+  --font-sans: var(--font-dm-sans), 'DM Sans', sans-serif;
+  --font-display: var(--font-playfair), 'Playfair Display', serif;
+  --font-mono: var(--font-dm-mono), 'DM Mono', monospace;
+  --font-garamond: var(--font-cormorant), 'Cormorant Garamond', serif;
 }

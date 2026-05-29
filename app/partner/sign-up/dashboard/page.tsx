@@ -1,7 +1,7 @@
-import { auth } from '@clerk/nextjs'
+import { auth } from '@clerk/nextjs/server'
 
 export default async function Dashboard() {
-  const { userId } = auth()
+  const { userId } = await auth()
 
   if (!userId) {
     return <div className="text-center mt-20">Please sign in</div>
