@@ -1,4 +1,9 @@
+'use client'
+
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { useUser } from '@clerk/nextjs'
 
 const DEMAND = [
   { label: 'Magicians', w: '82%', count: '147' },
@@ -84,7 +89,26 @@ const ENTERTAINERS = [
   },
 ]
 
+const NAV_CATEGORIES = [
+  { label: 'Baby showers',  category: 'Baby shower' },
+  { label: 'Birthdays',     category: '1st birthday' },
+  { label: 'Engagements',   category: 'Engagement party' },
+  { label: 'Entertainers',  category: 'entertainer' },
+  { label: 'Venues',        category: 'venue' },
+]
+
 export default function Home() {
+  const router = useRouter()
+  const { user, isSignedIn } = useUser()
+  const [query, setQuery] = useState('')
+  const [searchCity, setSearchCity] = useState('Toronto')
+
+  function handleSearch() {
+    const params = new URLSearchParams({ city: searchCity })
+    if (query.trim()) params.set('q', query.trim())
+    router.push(`/search?${params}`)
+  }
+
   return (
     <div className="bg-cream min-h-screen">
 
@@ -94,23 +118,48 @@ export default function Home() {
           Fête<span className="text-gold">.</span>
         </div>
         <ul className="flex gap-7 list-none m-0 p-0">
-          {['Baby showers', 'Birthdays', 'Engagements', 'Entertainers', 'Venues'].map(link => (
-            <li key={link}>
-              <Link href="#" className="text-sm text-ink2 hover:text-ink transition-colors no-underline">{link}</Link>
+          {NAV_CATEGORIES.map(({ label, category }) => (
+            <li key={label}>
+              <Link href={`/search?category=${encodeURIComponent(category)}`} className="text-sm text-ink2 hover:text-ink transition-colors no-underline">{label}</Link>
             </li>
           ))}
         </ul>
-        <div className="flex gap-2.5 items-center">
+        <div className="flex gap-2 items-center">
           <Link href="/partner/sign-up">
             <button className="text-[13px] font-medium px-[18px] py-2 border border-border rounded-full bg-transparent text-ink hover:bg-warm transition-colors cursor-pointer font-sans">
               List your service
             </button>
           </Link>
-          <Link href="/sign-in">
-            <button className="text-[13px] font-semibold px-5 py-[9px] rounded-full bg-ink text-white border-none hover:opacity-85 transition-opacity cursor-pointer font-sans">
-              Sign in
-            </button>
-          </Link>
+          {isSignedIn ? (
+            <>
+              <Link href="/search?city=Toronto">
+                <button className="text-[13px] font-medium px-[18px] py-2 border border-border rounded-full bg-transparent text-ink hover:bg-warm transition-colors cursor-pointer font-sans">
+                  Browse suppliers
+                </button>
+              </Link>
+              <div className="w-9 h-9 rounded-full bg-ink flex items-center justify-center text-white text-[13px] font-semibold cursor-pointer select-none">
+                {(user?.firstName?.[0] ?? user?.emailAddresses?.[0]?.emailAddress?.[0] ?? '?').toUpperCase()}
+              </div>
+            </>
+          ) : (
+            <>
+              <Link href="/partner/sign-in">
+                <button className="text-[13px] font-medium px-[18px] py-2 border border-border rounded-full bg-transparent text-ink hover:bg-warm transition-colors cursor-pointer font-sans">
+                  Partner sign-in
+                </button>
+              </Link>
+              <Link href="/sign-in">
+                <button className="text-[13px] font-medium px-[18px] py-2 border border-border rounded-full bg-transparent text-ink hover:bg-warm transition-colors cursor-pointer font-sans">
+                  Sign in
+                </button>
+              </Link>
+              <Link href="/sign-up">
+                <button className="text-[13px] font-semibold px-5 py-[9px] rounded-full bg-ink text-white border-none hover:opacity-85 transition-opacity cursor-pointer font-sans">
+                  Sign up free
+                </button>
+              </Link>
+            </>
+          )}
         </div>
       </nav>
 
@@ -136,18 +185,30 @@ export default function Home() {
             <div className="flex items-center bg-white border border-border rounded-xl p-[6px] pl-4 max-w-[480px] mb-5">
               <input
                 type="text"
+                value={query}
+                onChange={e => setQuery(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSearch()}
                 placeholder="Magician, venue, fire performer in Toronto…"
                 className="flex-1 border-none outline-none text-sm font-sans bg-transparent text-ink placeholder:text-ink3"
               />
-              <button className="bg-ink text-white rounded-lg px-5 py-[10px] text-[13px] font-semibold font-sans border-none cursor-pointer">
+              <button onClick={handleSearch} className="bg-ink text-white rounded-lg px-5 py-[10px] text-[13px] font-semibold font-sans border-none cursor-pointer">
                 Search
               </button>
             </div>
             <div className="flex gap-2 flex-wrap">
-              {['Baby shower', '1st birthday', 'Engagement party', 'Fire performers', 'Magicians', 'Venue rental'].map(tag => (
-                <span key={tag} className="text-xs py-1 px-3 rounded-full border border-border text-ink2 cursor-pointer hover:border-gold hover:text-gold transition-colors">
-                  {tag}
-                </span>
+              {[
+                { label: 'Baby shower',      category: 'Baby shower' },
+                { label: '1st birthday',     category: '1st birthday' },
+                { label: 'Engagement party', category: 'Engagement party' },
+                { label: 'Fire performers',  category: 'Fire performer' },
+                { label: 'Magicians',        category: 'Magician' },
+                { label: 'Venue rental',     category: 'venue' },
+              ].map(({ label, category }) => (
+                <Link key={label} href={`/search?category=${encodeURIComponent(category)}`}>
+                  <span className="text-xs py-1 px-3 rounded-full border border-border text-ink2 cursor-pointer hover:border-gold hover:text-gold transition-colors">
+                    {label}
+                  </span>
+                </Link>
               ))}
             </div>
           </div>
@@ -211,8 +272,8 @@ export default function Home() {
           <h2 className="font-display text-[36px] font-bold tracking-[-0.5px] text-ink mb-8">Every event, covered</h2>
           <div className="grid grid-cols-4 gap-4">
             {VERTICALS.map(v => (
+              <Link key={v.name} href={`/search?event=${encodeURIComponent(v.name)}`} className="no-underline">
               <div
-                key={v.name}
                 className="bg-white border border-border rounded-2xl p-6 flex flex-col gap-3 cursor-pointer hover:border-[rgba(24,22,15,0.16)] hover:-translate-y-0.5 transition-all"
               >
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-[22px] ${v.iconBg}`}>
@@ -229,6 +290,7 @@ export default function Home() {
                   </span>
                 )}
               </div>
+              </Link>
             ))}
           </div>
         </div>
@@ -244,8 +306,8 @@ export default function Home() {
         </h2>
         <div className="grid grid-cols-3 gap-4">
           {ENTERTAINERS.map(e => (
+            <Link key={e.name} href={`/search?q=${encodeURIComponent(e.name.split(' ')[0])}`} className="no-underline">
             <div
-              key={e.name}
               className="bg-white border border-border rounded-2xl overflow-hidden cursor-pointer hover:border-[rgba(24,22,15,0.16)] transition-colors"
             >
               <div className={`w-full h-40 flex items-center justify-center text-[52px] ${e.photoBg}`}>
@@ -267,6 +329,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
+            </Link>
           ))}
         </div>
       </div>

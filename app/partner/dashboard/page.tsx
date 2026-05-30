@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
 import AvailabilityCalendar from './_components/AvailabilityCalendar'
+import PartnerSidebar from '../_components/PartnerSidebar'
 
 /* ── Supabase client (service role — server only) ─────────────────────────── */
 function db() {
@@ -35,38 +36,6 @@ type Booking = {
   created_at: string
 }
 
-/* ── Sidebar nav ──────────────────────────────────────────────────────────── */
-const NAV_GROUPS = [
-  {
-    label: 'Overview',
-    items: [
-      { icon: '📊', label: 'Dashboard', href: '/partner/dashboard', active: true },
-      { icon: '📅', label: 'Calendar', href: '#' },
-      { icon: '💬', label: 'Inquiries', href: '#' },
-    ],
-  },
-  {
-    label: 'My listing',
-    items: [
-      { icon: '🤹', label: 'Profile', href: '#' },
-      { icon: '📸', label: 'Photos', href: '#' },
-      { icon: '💲', label: 'Pricing', href: '#' },
-    ],
-  },
-  {
-    label: 'Analytics',
-    items: [
-      { icon: '📈', label: 'Performance', href: '#' },
-      { icon: '⭐', label: 'Reviews', href: '#' },
-      { icon: '💰', label: 'Earnings', href: '#' },
-    ],
-  },
-  {
-    label: 'Account',
-    items: [{ icon: '⚙', label: 'Settings', href: '#' }],
-  },
-]
-
 const STATUS_STYLES: Record<string, string> = {
   pending:   'bg-gold-lt text-amber',
   confirmed: 'bg-teal-lt text-teal',
@@ -86,9 +55,6 @@ function fmt(cents: number) {
   return '$' + (cents / 100).toLocaleString('en-CA', { maximumFractionDigits: 0 })
 }
 
-function initials(name: string) {
-  return name.split(' ').slice(0, 2).map(w => w[0]).join('').toUpperCase()
-}
 
 /* ── Page ─────────────────────────────────────────────────────────────────── */
 export default async function PartnerDashboard() {
@@ -104,7 +70,7 @@ export default async function PartnerDashboard() {
     .eq('clerk_user_id', userId)
     .maybeSingle()
 
-  if (!supplier) redirect('/partner/sign-up')
+  if (!supplier) redirect('/partner/sign-up#partner-selector')
 
   const sid = supplier.id
 
@@ -208,57 +174,11 @@ export default async function PartnerDashboard() {
   /* 7. Pending inquiry badge count */
   const pendingCount = (recentInquiries as Inquiry[] ?? []).filter(i => i.status === 'pending').length
 
-  const supplierInitials = initials(supplier.name)
-  const supplierType = Array.isArray(supplier.category) ? supplier.category[0] : (supplier.category ?? 'Partner')
-
   /* ── Render ── */
   return (
     <div className="flex min-h-screen">
 
-      {/* ── SIDEBAR ── */}
-      <aside className="w-[220px] flex-shrink-0 flex flex-col py-7" style={{ background: '#18160F' }}>
-        <Link href="/" className="font-display text-[22px] font-bold text-white px-6 pb-7 tracking-[-0.5px] no-underline block">
-          Fête<span className="text-gold">.</span>
-        </Link>
-
-        {NAV_GROUPS.map(group => (
-          <div key={group.label}>
-            <div className="text-[10px] font-semibold tracking-[0.1em] uppercase px-6 mb-2 mt-5" style={{ color: 'rgba(255,255,255,0.3)' }}>
-              {group.label}
-            </div>
-            {group.items.map(item => (
-              <Link
-                key={item.label}
-                href={item.href}
-                className={`flex items-center gap-2.5 px-6 py-[9px] text-[13px] no-underline border-l-2 transition-all ${
-                  item.active ? 'text-white border-gold' : 'text-white/55 border-transparent hover:text-white/85'
-                }`}
-                style={item.active ? { background: 'rgba(255,255,255,0.07)' } : {}}
-              >
-                <span className="text-[15px] w-[18px] text-center">{item.icon}</span>
-                {item.label}
-                {item.label === 'Inquiries' && pendingCount > 0 && (
-                  <span className="ml-auto text-[10px] font-bold px-1.5 py-[1px] rounded-full bg-rose text-white">
-                    {pendingCount}
-                  </span>
-                )}
-              </Link>
-            ))}
-          </div>
-        ))}
-
-        <div className="mt-auto px-6 pt-4" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-gold flex items-center justify-center text-xs font-bold text-ink flex-shrink-0">
-              {supplierInitials}
-            </div>
-            <div>
-              <div className="text-xs font-medium text-white">{supplier.name}</div>
-              <div className="text-[10px]" style={{ color: 'rgba(255,255,255,0.4)' }}>{supplierType} · {supplier.city}</div>
-            </div>
-          </div>
-        </div>
-      </aside>
+      <PartnerSidebar supplier={supplier} pendingCount={pendingCount} />
 
       {/* ── MAIN ── */}
       <main className="flex-1 flex flex-col overflow-x-auto bg-cream">
@@ -271,7 +191,7 @@ export default async function PartnerDashboard() {
               <span className="w-[7px] h-[7px] rounded-full" style={{ background: supplier.status === 'active' ? '#2E9B72' : '#A09C93' }} />
               {supplier.status === 'active' ? 'Listing live' : 'Listing paused'}
             </div>
-            <Link href="/partner/sign-up">
+            <Link href="/partner/profile">
               <button className="text-xs font-semibold px-4 py-[7px] rounded-full bg-ink text-white border-none cursor-pointer font-sans">
                 Edit profile
               </button>
@@ -293,7 +213,7 @@ export default async function PartnerDashboard() {
                   Families you performed at baby showers for are approaching their child's 1st birthday. Update your availability to capture this demand.
                 </div>
               </div>
-              <Link href="#">
+              <Link href="/partner/calendar">
                 <button className="text-xs font-semibold px-4 py-[7px] rounded-full bg-rose text-white border-none cursor-pointer font-sans flex-shrink-0">
                   Update availability
                 </button>
@@ -394,9 +314,11 @@ export default async function PartnerDashboard() {
                 <div className="text-sm font-semibold text-ink">Recent inquiries</div>
                 <div className="text-[11px] text-ink3 mt-0.5">Respond within 24h to maintain your response badge</div>
               </div>
-              <button className="text-[11px] font-semibold px-3 py-[6px] rounded-full bg-ink text-white border-none cursor-pointer font-sans">
-                View all
-              </button>
+              <Link href="/partner/inquiries">
+                <button className="text-[11px] font-semibold px-3 py-[6px] rounded-full bg-ink text-white border-none cursor-pointer font-sans">
+                  View all
+                </button>
+              </Link>
             </div>
             {(recentInquiries as Inquiry[] ?? []).length === 0 ? (
               <div className="px-5 py-10 text-center text-xs text-ink3">

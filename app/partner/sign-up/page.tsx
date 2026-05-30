@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { useAuth } from '@clerk/nextjs'
 
 /* ── types ── */
 type PartnerType = 'entertainer' | 'food' | 'venue' | 'games' | 'other' | null
@@ -112,9 +113,12 @@ function Select({ children }: { children: React.ReactNode }) {
 /* ── main component ── */
 export default function PartnerSignUp() {
   const router = useRouter()
+  const { isSignedIn } = useAuth()
   const [partnerType, setPartnerType] = useState<PartnerType>(null)
   const [step, setStep] = useState<Step>(1)
   const [bizName, setBizName] = useState('')
+  const [city, setCity] = useState('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
 
   /* checkbox state: key → checked */
   const [checks, setChecks] = useState<Record<string, boolean>>({
@@ -194,14 +198,28 @@ export default function PartnerSignUp() {
           Fête<span className="text-gold not-italic" style={{ fontStyle: 'normal' }}>.</span>
         </Link>
         <div className="flex items-center gap-4">
-          <Link href="#" className="text-[13px] text-ink2 no-underline hover:text-ink">Browse events</Link>
-          <Link href="#" className="text-[13px] text-ink2 no-underline hover:text-ink">How it works</Link>
-          <Link href="#" className="text-[13px] text-ink2 no-underline hover:text-ink">Pricing</Link>
-          <Link href="/sign-in" className="text-[13px] font-semibold px-5 py-2 rounded-full bg-ink text-white no-underline">
-            Sign in
-          </Link>
+          <Link href="/" className="text-[13px] text-ink2 no-underline hover:text-ink">Browse events</Link>
+          <Link href="#benefits" className="text-[13px] text-ink2 no-underline hover:text-ink">How it works</Link>
+          <Link href="#testimonials" className="text-[13px] text-ink2 no-underline hover:text-ink">Pricing</Link>
+          {!isSignedIn && (
+            <Link href="/sign-in" className="text-[13px] font-semibold px-5 py-2 rounded-full bg-ink text-white no-underline">
+              Sign in
+            </Link>
+          )}
         </div>
       </nav>
+
+      {/* ── SIGNED-IN BANNER ── */}
+      {isSignedIn && (
+        <div className="bg-teal-lt border-b border-teal/25 px-12 py-3 flex items-center gap-3">
+          <span className="text-teal text-base">✓</span>
+          <div className="text-[13px] text-teal font-medium">
+            You&apos;re signed in.{' '}
+            <a href="#partner-selector" className="underline underline-offset-2">Select your partner type below</a>
+            {' '}and complete the form — your listing goes live when you click <strong>Go live now</strong> in step 4.
+          </div>
+        </div>
+      )}
 
       {/* ── HERO ── */}
       <section className="border-b border-border">
@@ -336,7 +354,14 @@ export default function PartnerSignUp() {
                   <div className="grid grid-cols-3 gap-3.5">
                     <div>
                       <FieldLabel>City *</FieldLabel>
-                      <Select><option value="">Select city</option>{['Toronto','Vancouver','Calgary','Ottawa','Montreal','Edmonton','Other'].map(c=><option key={c}>{c}</option>)}</Select>
+                      <select
+                        value={city}
+                        onChange={e => setCity(e.target.value)}
+                        className="border border-border rounded-[10px] px-[13px] py-[10px] text-[13px] font-sans text-ink bg-warm outline-none focus:border-gold focus:bg-white w-full transition-colors"
+                      >
+                        <option value="">Select city</option>
+                        {['Toronto','Vancouver','Calgary','Ottawa','Montreal','Edmonton','Other'].map(c=><option key={c}>{c}</option>)}
+                      </select>
                     </div>
                     <div>
                       <FieldLabel>Province *</FieldLabel>
@@ -357,18 +382,10 @@ export default function PartnerSignUp() {
                       This is the first thing planners read. Be specific — "I specialise in baby showers and 1st birthdays for families in the GTA" converts 3× better than generic descriptions.
                     </div>
                   </div>
-                  <div className="border-t border-border pt-5">
-                    <div className="text-xs font-semibold text-ink mb-2.5">Create your account</div>
-                    <div className="grid grid-cols-2 gap-4 mb-2.5">
-                      <div><FieldLabel>Password *</FieldLabel><Input type="password" placeholder="At least 8 characters" /></div>
-                      <div><FieldLabel>Confirm password *</FieldLabel><Input type="password" placeholder="Repeat password" /></div>
-                    </div>
-                    <div className="flex gap-2.5">
-                      {[['🔵', 'Sign up with Google'], ['📘', 'Sign up with Facebook']].map(([icon, label]) => (
-                        <button key={label} className="flex-1 py-2.5 border border-border rounded-[10px] bg-white text-[13px] text-ink2 font-sans flex items-center justify-center gap-1.5 cursor-pointer hover:bg-warm transition-colors">
-                          <span>{icon}</span> {label}
-                        </button>
-                      ))}
+                  <div className="border-t border-border pt-4 flex items-center gap-2.5 bg-gold-lt rounded-[10px] px-4 py-3">
+                    <span className="text-base flex-shrink-0">🔒</span>
+                    <div className="text-xs text-ink2">
+                      You&apos;ll create a free account at the final step — no password needed yet.
                     </div>
                   </div>
                 </div>
@@ -644,7 +661,47 @@ export default function PartnerSignUp() {
                   </div>
                   <div className="flex gap-2.5">
                     <button onClick={() => goStep(3)} className="text-[13px] font-medium px-[22px] py-2.5 rounded-full border border-border bg-transparent text-ink2 cursor-pointer font-sans">← Back</button>
-                    <button onClick={() => goStep('success')} className="text-[13px] font-semibold px-[26px] py-2.5 rounded-full bg-gold text-white border-none cursor-pointer font-sans hover:opacity-85 transition-opacity">🚀 Go live now</button>
+                    <button
+                      disabled={isSubmitting || isSignedIn === undefined}
+                      onClick={async () => {
+                        if (isSignedIn === false) {
+                          router.push('/sign-up')
+                          return
+                        }
+                        setIsSubmitting(true)
+                        try {
+                          const res = await fetch('/api/suppliers/create', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({
+                              name: bizName || 'My Business',
+                              categories: [partnerType],
+                              city: city || 'Toronto',
+                              priceMin: null,
+                              priceMax: null,
+                            }),
+                          })
+                          if (res.ok) {
+                            goStep('success')
+                          } else {
+                            alert('Something went wrong. Please try again.')
+                          }
+                        } catch {
+                          alert('Network error. Please try again.')
+                        } finally {
+                          setIsSubmitting(false)
+                        }
+                      }}
+                      className="text-[13px] font-semibold px-[26px] py-2.5 rounded-full bg-gold text-white border-none cursor-pointer font-sans hover:opacity-85 transition-opacity disabled:opacity-50"
+                    >
+                      {isSubmitting
+                        ? 'Publishing…'
+                        : isSignedIn === undefined
+                          ? 'Loading…'
+                          : isSignedIn
+                            ? '🚀 Go live now'
+                            : '🔐 Create account & go live'}
+                    </button>
                   </div>
                 </div>
               </>

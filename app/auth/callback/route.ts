@@ -4,10 +4,13 @@ import { type NextRequest, NextResponse } from 'next/server'
 
 export async function GET(request: NextRequest) {
   const { userId } = await auth()
-  const origin = new URL(request.url).origin
+  const url = new URL(request.url)
+  const origin = url.origin
+  const from = url.searchParams.get('from') // 'partner' | null
 
   if (!userId) {
-    return NextResponse.redirect(new URL('/sign-in', origin))
+    const dest = from === 'partner' ? '/partner/sign-in' : '/sign-in'
+    return NextResponse.redirect(new URL(dest, origin))
   }
 
   const supabase = createClient(
@@ -21,6 +24,12 @@ export async function GET(request: NextRequest) {
     .eq('clerk_user_id', userId)
     .maybeSingle()
 
-  // Suppliers → their dashboard; everyone else → homepage (planner experience)
-  return NextResponse.redirect(new URL(supplier ? '/partner/dashboard' : '/', origin))
+  if (from === 'partner') {
+    // Partner journey: existing listing → dashboard, no listing → wizard
+    const dest = supplier ? '/partner/dashboard' : '/partner/sign-up'
+    return NextResponse.redirect(new URL(dest, origin))
+  }
+
+  // Planner journey: always home, regardless of whether they also have a listing
+  return NextResponse.redirect(new URL('/', origin))
 }

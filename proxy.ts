@@ -1,11 +1,21 @@
 import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 import { NextResponse } from 'next/server'
 
-const isPartnerRoute = createRouteMatcher(['/partner/dashboard(.*)'])
+const isProtectedPartnerRoute = createRouteMatcher([
+  '/partner/dashboard(.*)',
+  '/partner/calendar(.*)',
+  '/partner/inquiries(.*)',
+  '/partner/profile(.*)',
+  '/partner/photos(.*)',
+  '/partner/pricing(.*)',
+  '/partner/analytics(.*)',
+  '/partner/reviews(.*)',
+  '/partner/earnings(.*)',
+  '/partner/settings(.*)',
+])
 
 export default clerkMiddleware(async (auth, req) => {
-  // Protect all /partner/dashboard routes — must be signed in
-  if (isPartnerRoute(req)) {
+  if (isProtectedPartnerRoute(req)) {
     const { userId } = await auth()
     if (!userId) {
       const signInUrl = new URL('/sign-in', req.url)
